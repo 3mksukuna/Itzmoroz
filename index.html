@@ -2,302 +2,229 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
     <title>Itzmoroz</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
-    <div id="splashScreen" class="splash">
-        <div class="splash-inner">
-            <div class="splash-ring-box">
-                <div class="splash-ring"></div>
-                <div class="splash-ring r2"></div>
-                <h1 class="splash-title">Itzmoroz</h1>
+<div id="splash" class="splash">
+    <div class="splash-c">
+        <div class="sp-anim"><div class="sp-ring"></div><div class="sp-ring r2"></div>
+        <h1 class="sp-logo">Itzmoroz</h1></div>
+        <div class="sp-bar"><div class="sp-fill"></div></div>
+        <p class="sp-sub">جاري التحميل...</p>
+    </div>
+</div>
+
+<div id="toasts"></div>
+<div id="imgV" class="imgv" style="display:none" onclick="this.style.display='none'"><img id="imgVS"></div>
+
+<div id="cfmBox" class="ov" style="display:none">
+    <div class="mod cfm-m"><p id="cfmMsg"></p>
+    <div class="cfm-btns"><button class="cfm-y" id="cfmY">نعم</button><button class="cfm-n" id="cfmN">لا</button></div></div>
+</div>
+
+<div id="authMod" class="ov" style="display:none">
+    <div class="mod auth-mod">
+        <button class="mx" onclick="closeMod('authMod')"><i class="fas fa-times"></i></button>
+        <div class="auth-tabs">
+            <button class="auth-tab active" id="tabL" onclick="switchAuth('login')">تسجيل دخول</button>
+            <button class="auth-tab" id="tabR" onclick="switchAuth('reg')">إنشاء حساب</button>
+        </div>
+        <form id="formLogin" onsubmit="doLogin(event)">
+            <div class="field"><i class="fas fa-user"></i><input id="logU" required placeholder="اسم المستخدم"></div>
+            <div class="field"><i class="fas fa-lock"></i><input id="logP" type="password" required placeholder="كلمة المرور"></div>
+            <button type="submit" class="btn-main">تسجيل دخول</button>
+        </form>
+        <form id="formReg" style="display:none" onsubmit="doRegister(event)">
+            <div class="field"><i class="fas fa-user"></i><input id="regU" required placeholder="اسم المستخدم" minlength="3"></div>
+            <div class="field"><i class="fas fa-lock"></i><input id="regP" type="password" required placeholder="كلمة المرور" minlength="4"></div>
+            <div class="field"><i class="fas fa-lock"></i><input id="regP2" type="password" required placeholder="تأكيد كلمة المرور"></div>
+            <div class="field"><i class="fas fa-user-tag"></i><input id="regN" required placeholder="الاسم المعروض"></div>
+            <div class="field"><i class="fas fa-calendar"></i><input id="regB" type="date" required></div>
+            <label class="chk-row"><input type="checkbox" id="agreeT" required><span>أوافق على <a href="#" onclick="openMod('termsMod');return false">شروط الاستخدام</a></span></label>
+            <button type="submit" class="btn-main">إنشاء حساب</button>
+        </form>
+    </div>
+</div>
+
+<div id="termsMod" class="ov" style="display:none">
+    <div class="mod terms-mod">
+        <button class="mx" onclick="closeMod('termsMod')"><i class="fas fa-times"></i></button>
+        <h2>📜 شروط الاستخدام</h2>
+        <ul class="terms-list">
+            <li>ممنوع مشاركة كلمة المرور مع أي شخص</li>
+            <li>إذا تم سرقة حسابك نحن غير مسؤولين</li>
+            <li>احترم جميع المستخدمين</li>
+            <li>لا تسيء استخدام المنصة</li>
+            <li>جميع المحتويات تعود لأصحابها</li>
+            <li>يحق للإدارة حذف أي محتوى مخالف</li>
+        </ul>
+    </div>
+</div>
+
+<div id="subMod" class="ov" style="display:none">
+    <div class="mod sub-mod">
+        <h2><i class="fas fa-bell"></i> اشترك في قنواتنا</h2>
+        <p class="sub-desc">اشترك في القنوات التالية للمتابعة</p>
+        <div id="subList"></div>
+        <button class="btn-skip" id="skipBtn" disabled>تخطي <span id="skipCD"></span></button>
+    </div>
+</div>
+
+<div id="detailMod" class="ov" style="display:none">
+    <div class="mod detail-mod">
+        <button class="mx" onclick="closeMod('detailMod')"><i class="fas fa-times"></i></button>
+        <div id="detailBody"></div>
+    </div>
+</div>
+
+<div id="addMod" class="ov" style="display:none">
+    <div class="mod add-mod">
+        <button class="mx" onclick="closeMod('addMod')"><i class="fas fa-times"></i></button>
+        <h2 id="addTitle"><i class="fas fa-plus-circle"></i> إضافة منتج</h2>
+        <form id="addForm" onsubmit="doAddProduct(event)">
+            <div class="field"><i class="fas fa-box"></i><input id="pName" required placeholder="اسم المنتج"></div>
+            <div class="field"><i class="fas fa-align-left"></i><textarea id="pDesc" required placeholder="وصف المنتج"></textarea></div>
+            <div class="file-sec">
+                <label class="file-label"><i class="fas fa-image"></i> صورة المنتج</label>
+                <div class="drop-zone" onclick="this.querySelector('input').click()">
+                    <i class="fas fa-cloud-upload-alt"></i><span>اضغط لاختيار صورة</span>
+                    <input type="file" accept="image/*" id="pImg" onchange="prevFile(this,'imgPv')" hidden>
+                </div>
+                <div id="imgPv" class="preview"></div>
             </div>
-            <div class="splash-bar-track"><div class="splash-bar-fill"></div></div>
-            <p class="splash-sub" data-ar="جاري التحميل..." data-en="Loading...">جاري التحميل...</p>
-        </div>
-    </div>
-
-    <div id="toasts"></div>
-
-    <!-- Auth Modal -->
-    <div id="authModal" class="overlay" style="display:none">
-        <div class="modal auth-modal">
-            <button class="modal-x" onclick="closeModal('authModal')"><i class="fas fa-times"></i></button>
-            <div class="auth-tabs">
-                <button class="auth-tab active" id="tabLogin" onclick="switchAuth('login')" data-ar="تسجيل دخول" data-en="Login">تسجيل دخول</button>
-                <button class="auth-tab" id="tabRegister" onclick="switchAuth('register')" data-ar="إنشاء حساب" data-en="Register">إنشاء حساب</button>
+            <div class="file-sec">
+                <label class="file-label"><i class="fas fa-images"></i> صور شاشة (اختياري)</label>
+                <div class="drop-zone" onclick="this.querySelector('input').click()">
+                    <i class="fas fa-images"></i><span>اضغط لاختيار صور</span>
+                    <input type="file" accept="image/*" multiple id="pSS" onchange="prevFiles(this,'ssPv')" hidden>
+                </div>
+                <div id="ssPv" class="preview ss-pv"></div>
             </div>
-            <form id="loginForm" class="auth-form" onsubmit="handleLogin(event)">
-                <div class="field">
-                    <i class="fas fa-user"></i>
-                    <input id="loginUser" type="text" required>
-                    <label data-ar="اسم المستخدم" data-en="Username">اسم المستخدم</label>
+            <div class="file-sec">
+                <label class="file-label"><i class="fas fa-file-archive"></i> ملف المنتج (اختياري)</label>
+                <div class="drop-zone" onclick="this.querySelector('input').click()">
+                    <i class="fas fa-file-download"></i><span>اضغط لاختيار ملف</span>
+                    <input type="file" id="pFile" onchange="prevMainFile(this,'filePv')" hidden>
                 </div>
-                <div class="field">
-                    <i class="fas fa-lock"></i>
-                    <input id="loginPass" type="password" required>
-                    <label data-ar="كلمة المرور" data-en="Password">كلمة المرور</label>
-                </div>
-                <button type="submit" class="btn-main" data-ar="تسجيل دخول" data-en="Login">تسجيل دخول</button>
-            </form>
-            <form id="registerForm" class="auth-form" style="display:none" onsubmit="handleRegister(event)">
-                <div class="field">
-                    <i class="fas fa-user"></i>
-                    <input id="regUser" type="text" required minlength="3">
-                    <label data-ar="اسم المستخدم" data-en="Username">اسم المستخدم</label>
-                </div>
-                <div class="field">
-                    <i class="fas fa-lock"></i>
-                    <input id="regPass" type="password" required minlength="4">
-                    <label data-ar="كلمة المرور" data-en="Password">كلمة المرور</label>
-                </div>
-                <div class="field">
-                    <i class="fas fa-lock"></i>
-                    <input id="regPass2" type="password" required>
-                    <label data-ar="تأكيد كلمة المرور" data-en="Confirm Password">تأكيد كلمة المرور</label>
-                </div>
-                <div class="field">
-                    <i class="fas fa-id-card"></i>
-                    <input id="regName" type="text" required>
-                    <label data-ar="الاسم المعروض" data-en="Display Name">الاسم المعروض</label>
-                </div>
-                <div class="field">
-                    <i class="fas fa-calendar"></i>
-                    <input id="regBirth" type="date" required>
-                    <label class="date-lbl" data-ar="تاريخ الميلاد" data-en="Birthdate">تاريخ الميلاد</label>
-                </div>
-                <div class="check-row">
-                    <input type="checkbox" id="agreeTerms" required>
-                    <label for="agreeTerms" data-ar="أوافق على شروط الاستخدام" data-en="I agree to Terms of Service">أوافق على شروط الاستخدام</label>
-                    <a href="#" onclick="openModal('termsModal');return false" style="margin-inline-start:6px;font-size:.8rem">📜</a>
-                </div>
-                <button type="submit" class="btn-main" data-ar="إنشاء حساب" data-en="Register">إنشاء حساب</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Terms Modal -->
-    <div id="termsModal" class="overlay" style="display:none">
-        <div class="modal">
-            <button class="modal-x" onclick="closeModal('termsModal')"><i class="fas fa-times"></i></button>
-            <h2 data-ar="شروط الاستخدام" data-en="Terms of Service">شروط الاستخدام</h2>
-            <div class="terms-body">
-                <p data-ar="1. ممنوع مشاركة كلمة المرور مع أي شخص." data-en="1. Do not share your password with anyone.">1. ممنوع مشاركة كلمة المرور مع أي شخص.</p>
-                <p data-ar="2. إذا تم سرقة حسابك، نحن غير مسؤولين." data-en="2. If your account is stolen, we are not responsible.">2. إذا تم سرقة حسابك، نحن غير مسؤولين.</p>
-                <p data-ar="3. احترم جميع المستخدمين." data-en="3. Respect all users.">3. احترم جميع المستخدمين.</p>
-                <p data-ar="4. لا تسيء استخدام المنصة." data-en="4. Do not misuse the platform.">4. لا تسيء استخدام المنصة.</p>
-                <p data-ar="5. جميع المحتويات تعود لأصحابها." data-en="5. All content belongs to their respective owners.">5. جميع المحتويات تعود لأصحابها.</p>
+                <div id="filePv" class="preview"></div>
             </div>
-        </div>
+            <div class="steps-sec">
+                <label class="file-label"><i class="fas fa-list-ol"></i> خطوات (اختياري)</label>
+                <div id="stepsBox"></div>
+                <button type="button" class="btn-add-step" onclick="addStep()"><i class="fas fa-plus"></i> إضافة خطوة</button>
+            </div>
+            <div id="publishLoader" class="pub-loader" style="display:none"><div class="spinner"></div> جاري النشر...</div>
+            <button type="submit" class="btn-main btn-publish" id="publishBtn"><i class="fas fa-paper-plane"></i> نشر المنتج</button>
+        </form>
     </div>
+</div>
 
-    <!-- Subscribe Modal -->
-    <div id="subModal" class="overlay" style="display:none">
-        <div class="modal sub-modal">
-            <h2 data-ar="اشترك في قنواتنا" data-en="Subscribe to Our Channels">اشترك في قنواتنا</h2>
-            <p class="sub-desc" data-ar="يرجى الاشتراك للمتابعة" data-en="Please subscribe to continue">يرجى الاشتراك للمتابعة</p>
-            <div id="subBtns"></div>
-            <button class="btn-skip" id="btnSkipSub" disabled data-ar="تخطي" data-en="Skip">تخطي</button>
-            <p class="skip-cd" id="skipCd"></p>
-        </div>
+<div id="supMod" class="ov" style="display:none">
+    <div class="mod sup-mod">
+        <button class="mx" onclick="closeMod('supMod')"><i class="fas fa-times"></i></button>
+        <h2><i class="fas fa-heart"></i> ادعمنا</h2>
+        <div id="supBody"></div>
     </div>
+</div>
 
-    <!-- Product Detail Modal -->
-    <div id="detailModal" class="overlay" style="display:none">
-        <div class="modal detail-modal">
-            <button class="modal-x" onclick="closeModal('detailModal')"><i class="fas fa-times"></i></button>
-            <div id="detailBody"></div>
-        </div>
+<div id="logsMod" class="ov" style="display:none">
+    <div class="mod logs-mod">
+        <button class="mx" onclick="closeMod('logsMod')"><i class="fas fa-times"></i></button>
+        <h2><i class="fas fa-users"></i> سجل المستخدمين</h2>
+        <div id="logsBody"></div>
     </div>
+</div>
 
-    <!-- Add Product Modal -->
-    <div id="addModal" class="overlay" style="display:none">
-        <div class="modal add-modal">
-            <button class="modal-x" onclick="closeModal('addModal')"><i class="fas fa-times"></i></button>
-            <h2 id="addTitle" data-ar="إضافة منتج" data-en="Add Product">إضافة منتج</h2>
-            <form id="addForm" onsubmit="handleAddProduct(event)">
-                <div class="field">
-                    <i class="fas fa-box"></i>
-                    <input id="prodName" required>
-                    <label data-ar="اسم المنتج" data-en="Product Name">اسم المنتج</label>
-                </div>
-                <div class="field">
-                    <i class="fas fa-align-left"></i>
-                    <textarea id="prodDesc" required></textarea>
-                    <label data-ar="الوصف" data-en="Description">الوصف</label>
-                </div>
-                <div class="file-group">
-                    <span class="file-label" data-ar="صورة المنتج" data-en="Product Image">صورة المنتج</span>
-                    <div class="drop-zone" id="imgDrop">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <span data-ar="اضغط أو اسحب الصورة هنا" data-en="Click or drag image here">اضغط أو اسحب الصورة هنا</span>
-                        <input type="file" accept="image/*" id="prodImg" onchange="previewFile(this,'imgPrev',false)">
+<div id="chMod" class="ov" style="display:none">
+    <div class="mod ch-mod">
+        <button class="mx" onclick="closeMod('chMod')"><i class="fas fa-times"></i></button>
+        <h2><i class="fas fa-tv"></i> إدارة القنوات</h2>
+        <div id="chBody"></div>
+    </div>
+</div>
+
+<div id="app" style="display:none">
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo" onclick="goHome()">Itzmoroz</div>
+            <div class="header-right">
+                <button class="btn-icon" onclick="toggleLang()" title="Language"><i class="fas fa-globe"></i></button>
+                <button class="btn-icon" onclick="toggleSearch()" title="Search"><i class="fas fa-search"></i></button>
+                <button class="btn-icon" id="btnFav" style="display:none" onclick="showFavPage()" title="Favorites"><i class="fas fa-heart"></i></button>
+                <div class="user-area" id="userArea" style="display:none">
+                    <button class="btn-user" id="btnUserMenu"><i class="fas fa-user-circle"></i> <span id="dispName"></span></button>
+                    <div class="user-dd" id="userDD">
+                        <button onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> تسجيل خروج</button>
                     </div>
-                    <div id="imgPrev" class="prev-box"></div>
                 </div>
-                <div class="file-group">
-                    <span class="file-label" data-ar="صور الشاشة (اختياري)" data-en="Screenshots (optional)">صور الشاشة (اختياري)</span>
-                    <div class="drop-zone" id="ssDrop">
-                        <i class="fas fa-images"></i>
-                        <span data-ar="اضغط أو اسحب صور الشاشة" data-en="Click or drag screenshots">اضغط أو اسحب صور الشاشة</span>
-                        <input type="file" accept="image/*" multiple id="prodSS" onchange="previewFile(this,'ssPrev',true)">
-                    </div>
-                    <div id="ssPrev" class="prev-box ss-prev"></div>
-                </div>
-                <div class="file-group">
-                    <span class="file-label" data-ar="ملف المنتج (APK, ZIP...) - أقصى 5GB" data-en="Product File (APK, ZIP...) - Max 5GB">ملف المنتج (APK, ZIP...) - أقصى 5GB</span>
-                    <div class="drop-zone" id="fileDrop">
-                        <i class="fas fa-file-archive"></i>
-                        <span data-ar="اضغط أو اسحب الملف" data-en="Click or drag file here">اضغط أو اسحب الملف</span>
-                        <input type="file" id="prodFile" onchange="previewFile(this,'filePrev',false,'file')">
-                    </div>
-                    <div id="filePrev" class="prev-box"></div>
-                </div>
-                <div class="steps-sec">
-                    <h3 data-ar="الطرق / الخطوات (اختياري)" data-en="Steps / Methods (optional)">الطرق / الخطوات (اختياري)</h3>
-                    <div id="stepsBox"></div>
-                    <button type="button" class="btn-add-step" onclick="addStep()"><i class="fas fa-plus"></i> <span data-ar="إضافة خطوة" data-en="Add Step">إضافة خطوة</span></button>
-                </div>
-                <div class="prog-wrap" id="progWrap" style="display:none">
-                    <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
-                    <span class="prog-txt" id="progTxt">0%</span>
-                </div>
-                <button type="submit" class="btn-main btn-publish" data-ar="نشر المنتج" data-en="Publish Product">نشر المنتج</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Support Modal -->
-    <div id="supModal" class="overlay" style="display:none">
-        <div class="modal sup-modal">
-            <button class="modal-x" onclick="closeModal('supModal')"><i class="fas fa-times"></i></button>
-            <h2 data-ar="ادعمنا" data-en="Support Us">ادعمنا</h2>
-            <div id="supBody"></div>
-        </div>
-    </div>
-
-    <!-- Logs Modal -->
-    <div id="logsModal" class="overlay" style="display:none">
-        <div class="modal logs-modal">
-            <button class="modal-x" onclick="closeModal('logsModal')"><i class="fas fa-times"></i></button>
-            <h2 data-ar="سجل المستخدمين" data-en="User Logs">سجل المستخدمين</h2>
-            <div id="logsBody"></div>
-        </div>
-    </div>
-
-    <!-- Channels Modal -->
-    <div id="chModal" class="overlay" style="display:none">
-        <div class="modal ch-modal">
-            <button class="modal-x" onclick="closeModal('chModal')"><i class="fas fa-times"></i></button>
-            <h2 data-ar="إدارة القنوات" data-en="Manage Channels">إدارة القنوات</h2>
-            <div id="chBody"></div>
-        </div>
-    </div>
-
-    <!-- Image Viewer -->
-    <div id="imgViewer" class="img-viewer" style="display:none" onclick="this.style.display='none'">
-        <img id="imgViewerSrc">
-    </div>
-
-    <!-- Confirm -->
-    <div id="confirmBox" class="overlay" style="display:none">
-        <div class="modal confirm-modal">
-            <p id="confirmMsg"></p>
-            <div class="confirm-btns">
-                <button class="btn-yes" id="confirmYes" data-ar="نعم" data-en="Yes">نعم</button>
-                <button class="btn-no" id="confirmNo" data-ar="لا" data-en="No">لا</button>
+                <button class="btn-main btn-sm" id="btnLogin" onclick="openMod('authMod')"><i class="fas fa-sign-in-alt"></i> دخول</button>
             </div>
         </div>
-    </div>
-
-    <!-- APP -->
-    <div id="app" style="display:none">
-        <header class="hdr">
-            <div class="hdr-in">
-                <div class="logo" onclick="goHome()"><span>Itzmoroz</span></div>
-                <div class="hdr-acts">
-                    <button class="btn-lang" onclick="toggleLang()"><i class="fas fa-globe"></i><span id="langLbl">EN</span></button>
-                    <button class="btn-ic" id="btnFav" style="display:none" onclick="showFavs()" title="Favorites"><i class="fas fa-heart"></i></button>
-                    <button class="btn-ic" onclick="toggleSearch()" title="Search"><i class="fas fa-search"></i></button>
-                    <div class="user-wrap" id="userWrap" style="display:none">
-                        <button class="btn-user" onclick="document.getElementById('userDrop').classList.toggle('show')">
-                            <i class="fas fa-user-circle"></i><span id="userNameLbl"></span>
-                        </button>
-                        <div class="user-drop" id="userDrop">
-                            <button onclick="handleLogout()" data-ar="تسجيل خروج" data-en="Logout">تسجيل خروج</button>
-                        </div>
-                    </div>
-                    <button class="btn-main btn-login-h" id="btnLoginH" onclick="openModal('authModal')" data-ar="تسجيل دخول" data-en="Login">تسجيل دخول</button>
-                </div>
-            </div>
-            <div class="search-row" id="searchRow" style="display:none">
-                <input id="searchIn" oninput="handleSearch()">
+        <div class="search-bar" id="searchBar" style="display:none">
+            <div class="search-inner">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="ابحث عن منتج..." oninput="doSearch()">
                 <button onclick="toggleSearch()"><i class="fas fa-times"></i></button>
             </div>
-        </header>
-
-        <!-- Owner Dashboard -->
-        <div class="dash" id="ownerDash" style="display:none">
-            <div class="dash-in">
-                <h3><span class="dash-dot"></span> <span data-ar="لوحة التحكم" data-en="Dashboard">لوحة التحكم</span></h3>
-                <div class="dash-grid">
-                    <button class="dash-b" onclick="openAddProduct()"><i class="fas fa-plus-circle"></i><span data-ar="إضافة منتج" data-en="Add Product">إضافة منتج</span></button>
-                    <button class="dash-b" onclick="showLogs()"><i class="fas fa-list-alt"></i><span data-ar="سجل المستخدمين" data-en="User Logs">سجل المستخدمين</span></button>
-                    <button class="dash-b" onclick="showChannels()"><i class="fas fa-tv"></i><span data-ar="إدارة القنوات" data-en="Manage Channels">إدارة القنوات</span></button>
-                    <button class="dash-b dash-b-sup" onclick="showSupSettings()"><i class="fas fa-donate"></i><span data-ar="إعدادات الدعم" data-en="Support Settings">إعدادات الدعم</span></button>
-                </div>
-            </div>
         </div>
+    </header>
 
-        <!-- User Dashboard -->
-        <div class="dash" id="userDash" style="display:none">
-            <div class="dash-in">
-                <h3><span class="dash-dot"></span> <span data-ar="لوحتي" data-en="My Dashboard">لوحتي</span></h3>
-                <div class="dash-grid">
-                    <button class="dash-b" onclick="openAddProduct()"><i class="fas fa-plus-circle"></i><span data-ar="إضافة منتج" data-en="Add Product">إضافة منتج</span></button>
-                    <button class="dash-b" onclick="showFavs()"><i class="fas fa-heart"></i><span data-ar="المفضلة" data-en="Favorites">المفضلة</span></button>
-                </div>
-            </div>
+    <div id="ownerDash" class="dashboard" style="display:none">
+        <h3><i class="fas fa-crown"></i> لوحة التحكم</h3>
+        <div class="dash-grid">
+            <button class="dash-btn" onclick="openAddProduct()"><i class="fas fa-plus-circle"></i><span>إضافة منتج</span></button>
+            <button class="dash-btn" onclick="showLogs()"><i class="fas fa-users"></i><span>المستخدمين</span></button>
+            <button class="dash-btn" onclick="showChannels()"><i class="fas fa-tv"></i><span>القنوات</span></button>
+            <button class="dash-btn db-green" onclick="showSupSettings()"><i class="fas fa-cog"></i><span>إعدادات الدعم</span></button>
         </div>
-
-        <!-- Products Section -->
-        <main class="main" id="mainSec">
-            <div class="sec-hdr">
-                <h2 data-ar="جميع المنتجات" data-en="All Products">جميع المنتجات</h2>
-                <div class="view-tog">
-                    <button class="vb active" id="gridBtn" onclick="setView('grid')"><i class="fas fa-th"></i></button>
-                    <button class="vb" id="listBtn" onclick="setView('list')"><i class="fas fa-list"></i></button>
-                </div>
-            </div>
-            <div class="prod-grid" id="prodGrid"></div>
-            <div class="empty" id="emptyMsg" style="display:none">
-                <i class="fas fa-box-open"></i>
-                <p data-ar="لا توجد منتجات بعد" data-en="No products yet">لا توجد منتجات بعد</p>
-            </div>
-        </main>
-
-        <!-- Favorites Section -->
-        <div id="favSec" style="display:none" class="main">
-            <div class="sec-hdr">
-                <h2 data-ar="المفضلة" data-en="Favorites">المفضلة</h2>
-                <button class="btn-back" onclick="goHome()"><i class="fas fa-arrow-left"></i></button>
-            </div>
-            <div class="prod-grid" id="favGrid"></div>
-        </div>
-
-        <button class="btn-sup-float" onclick="showSupport()"><i class="fas fa-donate"></i><span data-ar="ادعمنا" data-en="Support Us">ادعمنا</span></button>
-
-        <footer class="ftr">
-            <p>&copy; 2024 Itzmoroz. <span data-ar="جميع الحقوق محفوظة." data-en="All rights reserved.">جميع الحقوق محفوظة.</span></p>
-        </footer>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="main.js"></script>
+    <div id="userDash" class="dashboard" style="display:none">
+        <h3><i class="fas fa-th-large"></i> لوحتي</h3>
+        <div class="dash-grid">
+            <button class="dash-btn" onclick="openAddProduct()"><i class="fas fa-plus-circle"></i><span>إضافة منتج</span></button>
+            <button class="dash-btn" onclick="showFavPage()"><i class="fas fa-heart"></i><span>المفضلة</span></button>
+        </div>
+    </div>
+
+    <main id="mainSection">
+        <div class="section-head">
+            <h2><i class="fas fa-fire"></i> المنتجات</h2>
+            <div class="view-toggle">
+                <button class="vt-btn active" id="btnGrid" onclick="setView('grid')"><i class="fas fa-th"></i></button>
+                <button class="vt-btn" id="btnList" onclick="setView('list')"><i class="fas fa-list"></i></button>
+            </div>
+        </div>
+        <div id="productsGrid" class="products-grid"></div>
+        <div id="emptyState" class="empty-state" style="display:none">
+            <i class="fas fa-box-open"></i>
+            <h3>لا توجد منتجات بعد</h3>
+            <p>كن أول من يضيف منتج!</p>
+        </div>
+    </main>
+
+    <div id="favSection" style="display:none">
+        <div class="section-head">
+            <h2><i class="fas fa-heart"></i> المفضلة</h2>
+            <button class="btn-back" onclick="goHome()"><i class="fas fa-arrow-right"></i> رجوع</button>
+        </div>
+        <div id="favGrid" class="products-grid"></div>
+        <div id="favEmpty" class="empty-state" style="display:none">
+            <i class="fas fa-heart-broken"></i><h3>لا توجد مفضلات</h3>
+        </div>
+    </div>
+
+    <button class="btn-support-float" onclick="showSupport()"><i class="fas fa-donate"></i> ادعمنا</button>
+
+    <footer class="footer"><p>© 2024 Itzmoroz - جميع الحقوق محفوظة</p></footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="main.js"></script>
 </body>
 </html>
