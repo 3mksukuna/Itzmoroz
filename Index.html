@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Itzmoroz - تحميل التطبيقات والمحتوى</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body dir="rtl">
+    <!-- شاشة التحميل -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="spinner"></div>
+        <p>جارٍ التحميل...</p>
+    </div>
+
+    <!-- شاشة الاشتراك الإجباري -->
+    <div id="subscription-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2><i class="fas fa-exclamation-circle"></i> اشترك أولاً لتحميل المحتوى</h2>
+            <p>للحصول على هذا المنتج، يجب عليك الاشتراك في قنواتنا:</p>
+            
+            <div class="subscription-channels">
+                <button class="subscribe-btn youtube" onclick="subscribeChannel('youtube')">
+                    <i class="fab fa-youtube"></i> اشترك في يوتيوب
+                </button>
+                <button class="subscribe-btn telegram" onclick="subscribeChannel('telegram')">
+                    <i class="fab fa-telegram"></i> اشترك في تيليجرام
+                </button>
+                <button class="subscribe-btn discord" onclick="subscribeChannel('discord')">
+                    <i class="fab fa-discord"></i> انضم إلى ديسكورد
+                </button>
+                <button class="skip-btn" onclick="skipSubscription()" disabled>
+                    <i class="fas fa-forward"></i> تخطي (10 ثواني)
+                </button>
+            </div>
+            
+            <div class="timer-display">
+                <span id="countdown">10</span> ثواني متبقية
+            </div>
+        </div>
+    </div>
+
+    <!-- شاشة تسجيل الدخول -->
+    <div id="login-modal" class="modal hidden">
+        <div class="modal-content auth-form">
+            <span class="close-btn" onclick="closeModal('login-modal')">&times;</span>
+            <h2><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</h2>
+            <form id="login-form">
+                <input type="text" id="login-username" placeholder="اسم المستخدم" required>
+                <input type="password" id="login-password" placeholder="كلمة المرور" required>
+                <button type="submit"><i class="fas fa-sign-in-alt"></i> دخول</button>
+            </form>
+            <p>ليس لديك حساب؟ <a href="#" onclick="showRegister()">إنشاء حساب جديد</a></p>
+        </div>
+    </div>
+
+    <!-- شاشة إنشاء الحساب -->
+    <div id="register-modal" class="modal hidden">
+        <div class="modal-content auth-form">
+            <span class="close-btn" onclick="closeModal('register-modal')">&times;</span>
+            <h2><i class="fas fa-user-plus"></i> إنشاء حساب جديد</h2>
+            <form id="register-form">
+                <input type="text" id="register-username" placeholder="اسم المستخدم" required>
+                <input type="password" id="register-password" placeholder="كلمة المرور" required>
+                <input type="email" id="register-email" placeholder="البريد الإلكتروني (اختياري)">
+                <button type="submit"><i class="fas fa-user-plus"></i> إنشاء الحساب</button>
+            </form>
+            <p>لديك حساب بالفعل؟ <a href="#" onclick="showLogin()">تسجيل الدخول</a></p>
+        </div>
+    </div>
+
+    <!-- شاشة التحقق من البريد الإلكتروني -->
+    <div id="verification-modal" class="modal hidden">
+        <div class="modal-content auth-form">
+            <h2><i class="fas fa-envelope"></i> التحقق من البريد الإلكتروني</h2>
+            <p>تم إرسال رمز تحقق مكون من 6 أرقام إلى بريدك الإلكتروني</p>
+            <form id="verification-form">
+                <input type="text" id="verification-code" placeholder="أدخل الرمز" maxlength="6" required>
+                <button type="submit"><i class="fas fa-check"></i> تحقق</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- شاشة إضافة منتج -->
+    <div id="add-product-modal" class="modal hidden">
+        <div class="modal-content product-form">
+            <span class="close-btn" onclick="closeModal('add-product-modal')">&times;</span>
+            <h2><i class="fas fa-plus-circle"></i> إضافة منتج جديد</h2>
+            <form id="product-form">
+                <input type="text" id="product-name" placeholder="اسم المنتج" required>
+                <textarea id="product-description" placeholder="وصف المنتج" required></textarea>
+                
+                <label>صورة المنتج:</label>
+                <input type="file" id="product-image" accept="image/*" required>
+                
+                <label>ملف المنتج:</label>
+                <input type="file" id="product-file" accept=".apk,.zip,.rar" required>
+                
+                <div id="steps-container">
+                    <h3>خطوات التثبيت:</h3>
+                    <div class="step-item">
+                        <input type="text" class="step-title" placeholder="عنوان الخطوة">
+                        <textarea class="step-description" placeholder="وصف الخطوة"></textarea>
+                        <input type="file" class="step-file" accept=".apk,.zip,.rar">
+                        <button type="button" class="remove-step" onclick="removeStep(this)">إزالة</button>
+                    </div>
+                </div>
+                <button type="button" onclick="addStep()"><i class="fas fa-plus"></i> إضافة خطوة</button>
+                
+                <button type="submit"><i class="fas fa-save"></i> حفظ المنتج</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- شاشة عرض المنتج -->
+    <div id="product-detail-modal" class="modal hidden">
+        <div class="modal-content product-detail">
+            <span class="close-btn" onclick="closeModal('product-detail-modal')">&times;</span>
+            <div id="product-detail-content"></div>
+        </div>
+    </div>
+
+    <!-- شاشة الدعم -->
+    <div id="support-modal" class="modal hidden">
+        <div class="modal-content support-form">
+            <span class="close-btn" onclick="closeModal('support-modal')">&times;</span>
+            <h2><i class="fas fa-donate"></i> دعمنا</h2>
+            <p>يمكنك دعمنا من خلال تحويل مبلغ إلى البطاقة التالية:</p>
+            <div class="card-info">
+                <p><strong>رقم البطاقة:</strong> <span id="card-number">غير متوفر حالياً</span></p>
+                <p><strong>الحالة:</strong> <span id="card-status">غير متاح</span></p>
+            </div>
+            <p>شكراً لدعمكم المستمر!</p>
+        </div>
+    </div>
+
+    <!-- الشريط العلوي -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1><i class="fas fa-download"></i> Itzmoroz</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" onclick="showProducts()"><i class="fas fa-home"></i> الرئيسية</a></li>
+                    <li><a href="#" onclick="openSupport()"><i class="fas fa-donate"></i> ادعمنا</a></li>
+                    <li id="dashboard-link"><a href="#" onclick="openDashboard()"><i class="fas fa-tachometer-alt"></i> لوحة التحكم</a></li>
+                    <li id="login-link"><a href="#" onclick="showLogin()"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</a></li>
+                    <li id="logout-link" class="hidden"><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="container">
+        <section id="products-section">
+            <h2><i class="fas fa-box-open"></i> أحدث المنتجات</h2>
+            <div id="products-grid" class="products-grid">
+                <!-- سيتم إضافة المنتجات هنا ديناميكيًا -->
+            </div>
+        </section>
+
+        <section id="dashboard-section" class="hidden">
+            <h2><i class="fas fa-tachometer-alt"></i> لوحة التحكم</h2>
+            <div class="dashboard-cards">
+                <div class="card" onclick="openAddProduct()">
+                    <i class="fas fa-plus-circle"></i>
+                    <h3>إضافة منتج</h3>
+                    <p>إضافة منتج جديد إلى المتجر</p>
+                </div>
+                <div class="card" onclick="viewAllProducts()">
+                    <i class="fas fa-list"></i>
+                    <h3>جميع المنتجات</h3>
+                    <p>عرض وإدارة جميع المنتجات</p>
+                </div>
+                <div class="card" onclick="openSupport()">
+                    <i class="fas fa-donate"></i>
+                    <h3>الدعم المالي</h3>
+                    <p>إدارة طرق الدعم والتحويلات</p>
+                </div>
+                <div class="card" onclick="viewLogs()">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>سجل النشاطات</h3>
+                    <p>عرض سجل المستخدمين والمنتجات</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- التذييل -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Itzmoroz. جميع الحقوق محفوظة.</p>
+            <div class="social-links">
+                <a href="https://youtube.com/@itzmoroz" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="https://t.me/Itzmoroz" target="_blank"><i class="fab fa-telegram"></i></a>
+                <a href="https://discord.gg/7WFzk2VcU" target="_blank"><i class="fab fa-discord"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
